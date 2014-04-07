@@ -9,11 +9,13 @@ public class playMove : MonoBehaviour {
 	public bool isKeyboard;
 	public bool isSFloor;
 	
+	public Vector2 startLabel;
+	
 	void Start () {
 		
 		isKeyboard = true;
 		isSFloor = true;
-		
+		startLabel = new Vector2(Screen.width/2-50, Screen.height/2-25);
 		//Grab floor values, translate the player
 		// |
 		// |
@@ -32,11 +34,11 @@ public class playMove : MonoBehaviour {
 		//<---USING KEYBOARD--->//
 		if(isKeyboard)
 		{
-			if(Input.GetKey(KeyCode.LeftArrow) && this.transform.position.x > -200)
+			if(Input.GetKey(KeyCode.LeftArrow) && this.transform.position.x > -150)
 			{
 				this.transform.Translate(-1,0,0);
 			}
-			else if(Input.GetKey(KeyCode.RightArrow) && this.transform.position.x < 200)
+			else if(Input.GetKey(KeyCode.RightArrow) && this.transform.position.x < 150)
 			{
 				this.transform.Translate(1,0,0);
 			}

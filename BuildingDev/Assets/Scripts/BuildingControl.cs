@@ -9,12 +9,12 @@ public class BuildingControl : MonoBehaviour {
 	public List<GameObject> currentbuildings;//Current on screen buildings
 	public GameObject newBuilding;//Holder for a new building
 	
-	public int lastSpawn;
-	public int pickBuilding;
+	public int lastSpawn;//Stores last building picked
+	public int pickBuilding;//For math.random
 	
-	
+	//Timers
 	public float Timer;
-	
+	public float labelTimer;
 	
 	//Buildings//
 	public GameObject building1;
@@ -22,13 +22,23 @@ public class BuildingControl : MonoBehaviour {
 	public GameObject building3;
 	//--------// 
 	
-	public Vector2 startLable;
-	public string startLableText;
+	//Zombies//
+	public GameObject zombie1;
+	public GameObject zombie2;
+	public GameObject zombie3;
+	public GameObject zombie4;
+	//-------//
+	
+	//Gui stuff
+	public Vector2 startLabel;
+	public string startLabelText;
+	
+	
 	
 	public bool gameStarted; //Has player pressed space?
 	public bool go; //GamePlaing
 	
-	public float animLoop;
+	public double animLoop;
 	public bool animFinished;
 	
 	public int noBuildings;
@@ -39,12 +49,12 @@ public class BuildingControl : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 	
-		animLoop = 2;
+		animLoop = 0.5;
 		lastSpawn = 50;//Set last spawn so there is a compare value
 		animFinished = false;
 		go = false;
-		startLableText = "Press space to start...";
-		startLable = new Vector2(Screen.width/2-50, Screen.height/2-25);
+		startLabelText = "Press space to start...";
+		startLabel = new Vector2(Screen.width/2-50, Screen.height/2-25);
 		
 		//Add Building Objects to List//
 		buildings.Add(building1);
@@ -56,7 +66,7 @@ public class BuildingControl : MonoBehaviour {
 		//----------------------------// 
 		
 		noBuildings = buildings.Count;
-		spawnLocation = new Vector3 (-1000,500,1000);
+		spawnLocation = new Vector3 (-1000,0,1000);
 		
 	}
     //<-------END START-------> //
@@ -69,11 +79,11 @@ public class BuildingControl : MonoBehaviour {
 		{
 			spawnLocation.x = -1000;
 			animBuildings();
-			animLoop +=2;
-			if(animLoop == 20)
+			animLoop +=0.5;
+			if(animLoop == 3)
 			{
 				animFinished = true;
-				print("FINSIHED!");
+				//print("FINSIHED!");
 			}
 		}
 		//
@@ -81,24 +91,36 @@ public class BuildingControl : MonoBehaviour {
 		{
 			gameStarted = go = true;	
 			//Hide Lable
-			startLable = new Vector2(-1000,-1000);
+			startLabel = new Vector2(-1000,-1000);
 		}
 		//Pause Game
 		if (Input.GetKeyDown (KeyCode.P) && gameStarted)
 		{
 			go = !go;	
-			startLable = new Vector2(-1000,-1000);
+			startLabel = new Vector2(-1000,-1000);
 			if (!go)
 			{
-				startLableText = "Game Paused";
+				startLabelText = "Game Paused";
 				//Show Label
-				startLable = new Vector2(Screen.width/2-50, Screen.height/2-25);
+				startLabel = new Vector2(Screen.width/2-50, Screen.height/2-25);
+			}
+		}
+		if(Input.GetKeyDown(KeyCode.S))
+		{
+			print("SwitchCon");
+			labelTimer = Timer + 2;
+			startLabelText = "Controller Switched";
+			startLabel = new Vector2(Screen.width/2-50, Screen.height/2-25);
+			if(Timer > labelTimer)
+			{
+				print("if");
+				startLabel = new Vector2(-1000,-1000);		
 			}
 		}
 		//If Game Running
 		if(go)
 		{
-			print(noBuildings);
+			//print(noBuildings);
 			noBuildings = buildings.Count;
 			for(int i = 0; i < ((noBuildings+3)*2); i++)
 			{
@@ -117,7 +139,7 @@ public class BuildingControl : MonoBehaviour {
 				//Move buildings towards the camera
 				else
 				{
-					currentbuildings[i].transform.Translate(0,0,-scrollSpeed);
+					currentbuildings[i].transform.Translate(0,-scrollSpeed,0);
 				}
 			}
 		}
@@ -132,17 +154,16 @@ public class BuildingControl : MonoBehaviour {
 	{
 		if(animFinished)
 		{
-		GUI.Label (new Rect (startLable.x, startLable.y, 130, 60), startLableText);	
+			GUI.Label (new Rect (startLabel.x, startLabel.y, 130, 60), startLabelText);	
 		}
+		
 	}
 	//<--- END GUI --->//
 	
 	void animBuildings()
 	{
-		print("animBuilding");
 		for(int i = 0; i < 2; i++)
 		{
-			print(spawnLocation.z);
 			while (pickBuilding == lastSpawn)
 			{
 				pickBuilding = Random.Range(0, noBuildings);
@@ -151,9 +172,9 @@ public class BuildingControl : MonoBehaviour {
 			lastSpawn = pickBuilding;
 					
 				
-			newBuilding  = Instantiate (buildings[pickBuilding], spawnLocation, Quaternion.identity) as GameObject;
+			newBuilding  = Instantiate (buildings[pickBuilding], spawnLocation, Quaternion.Euler(90, 0, 0)) as GameObject;
 			currentbuildings.Add(newBuilding);
-			
+			//Add Second building to other side
 			spawnLocation.x += 2000;
 		}
 		//Change Spawn Location
@@ -163,13 +184,13 @@ public class BuildingControl : MonoBehaviour {
 	void SpawnBuild (int listIndex, float xPos) {
 		
 		//Building Spawn Location
-		spawnLocation = new Vector3(xPos,500,13250);	
+		spawnLocation = new Vector3(xPos,0,8250);	//CHANGE Z VALUE SO ITS CORRECT!
 		
 		//Random pick Building
 		int pickBuilding = Random.Range(0, noBuildings);
 		
 		//Instantiate Building
-		newBuilding  = Instantiate (buildings[pickBuilding], spawnLocation, Quaternion.identity) as GameObject;
+		newBuilding  = Instantiate (buildings[pickBuilding], spawnLocation, Quaternion.Euler(90, 0, 0)) as GameObject;
 		currentbuildings.Add(newBuilding);
 	}
 	//<---END SPAWNBUILD--->
