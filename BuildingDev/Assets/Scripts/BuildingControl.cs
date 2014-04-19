@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class BuildingControl : MonoBehaviour {
-
+	
 	
 	public List<GameObject> buildings;//List of buildings game can spawn
 	public List<GameObject> currentbuildings;//Current on screen buildings
@@ -22,12 +22,7 @@ public class BuildingControl : MonoBehaviour {
 	public GameObject building3;
 	//--------// 
 	
-	//Zombies//
-	public GameObject zombie1;
-	public GameObject zombie2;
-	public GameObject zombie3;
-	public GameObject zombie4;
-	//-------//
+	
 	
 	//Gui stuff
 	public Vector2 startLabel;
@@ -42,14 +37,14 @@ public class BuildingControl : MonoBehaviour {
 	public bool animFinished;
 	
 	public int noBuildings;
-	public int scrollSpeed = 3;
+	public float scrollSpeed = 3f;
 	
 	public Vector3 spawnLocation;
 	
 	// Use this for initialization
 	void Start () {
-	
-		animLoop = 0.5;
+		
+		animLoop = 1;
 		lastSpawn = 50;//Set last spawn so there is a compare value
 		animFinished = false;
 		go = false;
@@ -60,16 +55,13 @@ public class BuildingControl : MonoBehaviour {
 		buildings.Add(building1);
 		buildings.Add(building2);
 		buildings.Add(building3);
-		buildings.Add(building1);
-		buildings.Add(building2);
-		buildings.Add(building3);
 		//----------------------------// 
 		
 		noBuildings = buildings.Count;
-		spawnLocation = new Vector3 (-1000,0,1000);
+		spawnLocation = new Vector3 (-1000,440,1000);
 		
 	}
-    //<-------END START-------> //
+	//<-------END START-------> //
 	
 	// Update is called once per frame
 	void Update () {
@@ -79,8 +71,8 @@ public class BuildingControl : MonoBehaviour {
 		{
 			spawnLocation.x = -1000;
 			animBuildings();
-			animLoop +=0.5;
-			if(animLoop == 3)
+			animLoop +=1;
+			if(animLoop == 4)
 			{
 				animFinished = true;
 				//print("FINSIHED!");
@@ -121,8 +113,8 @@ public class BuildingControl : MonoBehaviour {
 		if(go)
 		{
 			//print(noBuildings);
-			noBuildings = buildings.Count;
-			for(int i = 0; i < ((noBuildings+3)*2); i++)
+			noBuildings = currentbuildings.Count;
+			for(int i = 0; i < noBuildings; i++)
 			{
 				//If building is off screen
 				if(currentbuildings[i].transform.position.z < -200)
@@ -139,7 +131,7 @@ public class BuildingControl : MonoBehaviour {
 				//Move buildings towards the camera
 				else
 				{
-					currentbuildings[i].transform.Translate(0,-scrollSpeed,0);
+					currentbuildings[i].transform.Translate(0,scrollSpeed,0);
 				}
 			}
 		}
@@ -170,27 +162,27 @@ public class BuildingControl : MonoBehaviour {
 			}
 			//Replace last picked building
 			lastSpawn = pickBuilding;
-					
-				
-			newBuilding  = Instantiate (buildings[pickBuilding], spawnLocation, Quaternion.Euler(90, 0, 0)) as GameObject;
+			
+			
+			newBuilding  = Instantiate (buildings[pickBuilding], spawnLocation, Quaternion.Euler(-90, 0, 0)) as GameObject;
 			currentbuildings.Add(newBuilding);
 			//Add Second building to other side
 			spawnLocation.x += 2000;
 		}
 		//Change Spawn Location
-		spawnLocation.z += 1500;
+		spawnLocation.z += 1200;
 	}
 	
 	void SpawnBuild (int listIndex, float xPos) {
 		
 		//Building Spawn Location
-		spawnLocation = new Vector3(xPos,0,8250);	//CHANGE Z VALUE SO ITS CORRECT!
+		spawnLocation = new Vector3(xPos,440,3500);	//CHANGE Z VALUE SO ITS CORRECT!
 		
 		//Random pick Building
 		int pickBuilding = Random.Range(0, noBuildings);
 		
 		//Instantiate Building
-		newBuilding  = Instantiate (buildings[pickBuilding], spawnLocation, Quaternion.Euler(90, 0, 0)) as GameObject;
+		newBuilding  = Instantiate (buildings[pickBuilding], spawnLocation, Quaternion.Euler(-90, 0, 0)) as GameObject;
 		currentbuildings.Add(newBuilding);
 	}
 	//<---END SPAWNBUILD--->
