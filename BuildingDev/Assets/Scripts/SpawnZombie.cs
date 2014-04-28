@@ -66,7 +66,7 @@ public class SpawnZombie : MonoBehaviour {
 		if (bc.go) {
 			if (zombieTimer > zombieSpawn) {
 				// (Number of zombies, Time added till next spawn)
-				spawnZombies(11, 5);
+				spawnZombies(8, 2);
 			} else {
 				int count = 0;
 				while (count < currentZombies.Count) {

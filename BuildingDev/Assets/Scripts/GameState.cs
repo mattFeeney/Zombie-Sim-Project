@@ -6,6 +6,9 @@ public class GameState : MonoBehaviour {
 	public float gameTime;
 	public int playerHealth;
 
+	private bool hit;
+	private float hitTimer;
+
 
 	BuildingControl bc ;
 
@@ -13,8 +16,7 @@ public class GameState : MonoBehaviour {
 	public void Start () {
 	
 		playerHealth = 3;
-		playing = false;
-
+		hit = false;
 		bc = gameObject.GetComponent<BuildingControl>();
 
 	}
@@ -27,23 +29,31 @@ public class GameState : MonoBehaviour {
 			gameTime = Time.time;
 		}
 
+		if(gameTime > 180)
+		{
+			gameOver();
+		}
+		if(hit)//Stops multiple lives lost at once
+		{
+			if(gameTime > hitTimer + 1)	hit = false;
+		}
 	}
 
 	public void playerHit()
 	{
-		print("GAME STATE - Player Hit()");
-		//Timer for 1 second to avoid double hit?
-		playerHealth --;
-		//player.health --
+		if(!hit)//Stops multiple lives lost at once
+		{
+			//print("GAME STATE - Player Hit()");
+			playerHealth --;
+			hit = true;
+			hitTimer = gameTime;
+
+			//HIT ANIMATION GUI AND CAMERA SHAKE!
+		}
 		if (playerHealth == 0)
 		{
 			gameOver();
 		}
-		//else
-		//{
-			//hit animations a go go!
-		//}
-
 	}
 
 	void gameOver()

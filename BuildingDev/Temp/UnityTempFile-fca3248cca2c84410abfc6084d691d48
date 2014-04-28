@@ -41,7 +41,7 @@
 'Assets/Scripts/GUIScript.cs'
 'Assets/Scripts/GameState.cs'
 'Assets/Scripts/PlayMove.cs'
-'Assets/Scripts/SpawnZombie.cs'
+'Assets/Scripts/spawnZombie.cs'
 'Assets/SilverLining/Resources/SilverLining.cs'
 'Assets/SilverLining/Src/SilverLiningCirrusCloud.cs'
 'Assets/SilverLining/Src/SilverLiningCumulusCloud.cs'
