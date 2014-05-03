@@ -8,6 +8,9 @@ public class PlayMove : MonoBehaviour {
 	
 	private bool isKeyboard;
 	private bool isSFloor;
+	private float PlayerX;
+	private float PlayerY;
+
 	public int movementScore;
 	public Vector2 startLabel;
 
@@ -21,18 +24,29 @@ public class PlayMove : MonoBehaviour {
 	
 	GameState gs;
 	BuildingControl bc ;
+	UDPReceive receive;
+	Settings settings;
 	
 	void Start () {
-		
+
+
+		Screen.SetResolution(1600, 2400, false);
+
 		isKeyboard = true;
 		isSFloor = false;
 		movementScore = 0;
+
+		PlayerX = 0;
 
 		Shaking = false; 
 
 		//Link Game State script	
 		gs = GameObject.Find ("GameController").GetComponent<GameState>();
 		bc = GameObject.Find ("GameController").GetComponent<BuildingControl>();
+		receive = GameObject.Find ("SmartFloor Prefab").GetComponent<UDPReceive>();
+		settings = GameObject.Find("SmartFloor Prefab").GetComponent<Settings>();
+
+
 
 
 	}
@@ -41,6 +55,7 @@ public class PlayMove : MonoBehaviour {
 	void Update () {
 		if(bc.go)
 		{	
+			PlayerX = receive.resultData[0].x_cop_mm;
 			//<---USING KEYBOARD--->//
 			if(isKeyboard)
 			{
@@ -59,6 +74,8 @@ public class PlayMove : MonoBehaviour {
 			else if (isSFloor)
 			{
 				//movementScore += movement on floor.round();
+
+				this.transform.Translate(-receive.resultData[0].x_cop_mm,0,0);
 			}
 			//-----------------//
 			if(Input.GetKeyDown(KeyCode.S))
@@ -81,6 +98,11 @@ public class PlayMove : MonoBehaviour {
 				Shaking = false;  
 			}
 		}
+	}
+
+	void OnGUI()
+	{
+		GUI.Label(new Rect(10,10, 500,100), PlayerX.ToString());
 	}
 
 	void OnCollisionEnter (Collision col)

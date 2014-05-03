@@ -22,7 +22,7 @@ public class BuildingControl : MonoBehaviour {
 	public GameObject building3;
 	//--------// 
 	
-	
+	public AnimationClip buildAnim;
 	
 	//Gui stuff
 	public Vector2 startLabel;
@@ -40,6 +40,8 @@ public class BuildingControl : MonoBehaviour {
 	public float scrollSpeed = 3f;
 	
 	public Vector3 spawnLocation;
+
+	GameState gs;
 	
 	// Use this for initialization
 	void Start () {
@@ -59,6 +61,9 @@ public class BuildingControl : MonoBehaviour {
 		
 		noBuildings = buildings.Count;
 		spawnLocation = new Vector3 (-1000,440,1000);
+
+
+		gs = GameObject.Find ("GameController").GetComponent<GameState>();
 		
 	}
 	//<-------END START-------> //
@@ -112,27 +117,35 @@ public class BuildingControl : MonoBehaviour {
 		//If Game Running
 		if(go)
 		{
-			//print(noBuildings);
-			noBuildings = currentbuildings.Count;
+
+			int count = 0;
+			while (count < currentbuildings.Count) {
+				//If zombie is off screen
+				if (currentbuildings [count].transform.position.z < -200) {
+					float xPos = currentbuildings[count].transform.position.x;
+					//Remove Zombie  
+					GameObject temp = currentbuildings [count];
+					currentbuildings.Remove(temp);
+					Destroy(temp);
+					//print("Building Destroyed");
+					SpawnBuild(count, xPos);
+					//break;
+				}
+				//Move Buildings towards the camera
+				else {
+					currentbuildings [count].transform.Translate(0, scrollSpeed, 0);
+					count += 1;
+				}
+			}  // end while...
+		}
+		//If no health - Game Over
+		if(gs.gameover)
+		{
 			for(int i = 0; i < noBuildings; i++)
 			{
-				//If building is off screen
-				if(currentbuildings[i].transform.position.z < -200)
-				{
-					float xPos = currentbuildings[i].transform.position.x;
-					//Remove Buildings	
-					GameObject temp = currentbuildings[i];
-					currentbuildings.Remove(currentbuildings[i]);
-					Destroy(temp);
-					
-					//Spawn new build - pass in it's position in the list and x position (which side it's on)
-					SpawnBuild(i, xPos);
-				}
-				//Move buildings towards the camera
-				else
-				{
-					currentbuildings[i].transform.Translate(0,scrollSpeed,0);
-				}
+				//currentbuildings[i].animation[buildAnim.name].speed = -1.0f;
+				//currentbuildings[i].animation[buildAnim.name].time = currentbuildings[i].animation[buildAnim.name].length;
+				//currentbuildings[i].animation.Play(buildAnim.name);
 			}
 		}
 		//Game started - Player has Paused

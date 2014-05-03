@@ -4,6 +4,7 @@ using System.Collections;
 public class GUIScript : MonoBehaviour {
 
 	//GUI IMAGES
+	public Texture2D GameOverImg;
 	public Texture2D heart;
 	private int heartPos;
 	//
@@ -33,6 +34,7 @@ public class GUIScript : MonoBehaviour {
 	void Update () {
 		noLives = gs.playerHealth;
 		playing = bc.go;
+		gameOver = gs.gameover;
 	}
 
 	void OnGUI ()
@@ -51,8 +53,11 @@ public class GUIScript : MonoBehaviour {
 		}
 		else if (gameOver)
 		{
+			print("GAMEOVER!");
+			GUI.Label (new Rect ((Screen.width-512)/2, (Screen.height-256)/2, 512, 256), GameOverImg);
 			//SHOW GAME OVER IMAGES
 			//SHOW SCORE
+			//Reverse Builds be built animations?
 		}
 	}
 }

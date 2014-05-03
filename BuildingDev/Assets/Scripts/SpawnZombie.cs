@@ -5,7 +5,6 @@ using System.Collections.Generic;
 public class SpawnZombie : MonoBehaviour {
 	
 	private float zombieTimer;
-	private float zombieSpawn = 0; //Time till next wave is spawned
 	private List<GameObject> zombies;//Zombies objects to use when spawning
 	private List<GameObject> currentZombies;
 	private List<Vector3>  spawnLocations;
@@ -14,8 +13,16 @@ public class SpawnZombie : MonoBehaviour {
 	public int pickZombie;
 	public int noZombies;
 	public int location;
-	public float zombieSpeed;
 	public Vector3 spawnLocation;
+
+	//Wave Settings//
+	public int minZombies;
+	public int maxZombies;
+	public int timeToSpawn;
+	public float zombieSpeed;
+	public float zombieSpawn; //Time till next wave is spawned
+
+	//------------//
 
 
 	//Zombies//
@@ -26,17 +33,25 @@ public class SpawnZombie : MonoBehaviour {
 	//-------//
 	
 	BuildingControl bc ;
+	GameState gs;
 	
 	// Use this for initialization
 	void Start() {    
 		//Set high to be out of pickable range
 		location = 0;
 		//
-		zombieSpawn = 3;
+		minZombies = 4;
+		maxZombies = 5;
 		zombieSpeed = 3;
+		zombieSpawn = 5;
+		timeToSpawn = 5;
 		
-		//Add Zombies to List
+		// Init Lists //
 		zombies = new List<GameObject>();
+		currentZombies = new List<GameObject>();
+		zombieWave = new List<int>();
+
+		//Add Zombies to List//
 		zombies.Add(zombie1);
 		zombies.Add(zombie2);
 		zombies.Add(zombie3);
@@ -47,10 +62,10 @@ public class SpawnZombie : MonoBehaviour {
 		for (int x = -150; x < 180; x += 30) {
 			spawnLocations.Add(new Vector3(x, 0, 1500));
 		}
-		//LINK BUILDING SCRIPT
+		//LINK Scripts//
 		bc = gameObject.GetComponent<BuildingControl>();
-		currentZombies = new List<GameObject>();
-		zombieWave = new List<int>();
+		gs = GameObject.Find ("GameController").GetComponent<GameState>();
+
 	}
 	
 	// Update is called once per frame
@@ -58,6 +73,8 @@ public class SpawnZombie : MonoBehaviour {
 		//zombieSpeed = bc.scrollSpeed * 2;
 		
 		zombieTimer = Time.time;
+
+		print(timeToSpawn);
 		
 		//UPDATE NUMBER OF ZOMBIES
 		noZombies = currentZombies.Count;
@@ -66,7 +83,7 @@ public class SpawnZombie : MonoBehaviour {
 		if (bc.go) {
 			if (zombieTimer > zombieSpawn) {
 				// (Number of zombies, Time added till next spawn)
-				spawnZombies(8, 2);
+				spawnZombies();
 			} else {
 				int count = 0;
 				while (count < currentZombies.Count) {
@@ -76,7 +93,7 @@ public class SpawnZombie : MonoBehaviour {
 						GameObject temp = currentZombies [count];
 						currentZombies.Remove(temp);
 						Destroy(temp);
-						print("Zombie Destroyed");
+						//print("Zombie Destroyed");
 						//break;
 					}
 					//Move zombie towards the camera
@@ -87,12 +104,21 @@ public class SpawnZombie : MonoBehaviour {
 				}  // end while...
 			} // end else zombieTimer>zombieSpawn
 		}
+		if(gs.playerHealth == 0)
+		{
+			int count = 0;
+			while (count < currentZombies.Count) {
+				currentZombies [count].transform.Translate(0, 0, -1);
+				count += 1;
+			}  // end
+		}
 	}
 	
-	void spawnZombies(int noOfZombies, int zombieTimer) {
+	void spawnZombies() {
 		zombieWave.Clear(); // empty the zombieWave
 		// generate locations to spawn...
-		zombieWave.Add(Random.Range(0, 11)); // add first location....       
+		zombieWave.Add(Random.Range(0, 11)); // add first location....  
+		int noOfZombies = Random.Range(minZombies, maxZombies);
 		for (int i = 1; i < noOfZombies; i++) { // for the remaining number of zombies
 			location = Random.Range(0, 11); // generate a random location
 			
@@ -111,7 +137,7 @@ public class SpawnZombie : MonoBehaviour {
 			currentZombies.Add(newZombie);
 		}
 		// reset zombieSpawn time....
-		zombieSpawn = Time.time + zombieTimer;
+		zombieSpawn += timeToSpawn;
 		//prevLocation = 999;
 	} // end spawnZombies+++++++++++
 } // end class

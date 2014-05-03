@@ -2,7 +2,12 @@ fileFormatVersion: 2
 guid: 96db4afdc2947486a8dad936f13825e6
 MonoImporter:
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - newBuilding: {instanceID: 0}
+  - building1: {instanceID: 0}
+  - building2: {instanceID: 0}
+  - building3: {instanceID: 0}
+  - buildAnim: {fileID: 7400000, guid: de58eae7d919243b8a231d82b48048cd, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
